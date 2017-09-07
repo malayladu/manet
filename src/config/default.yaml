@@ -6,13 +6,17 @@ ui: true
 
 silent: false
 level: info
+storage: /temp/screenshots
 
 engine: phantomjs
 timeout: 60000
 compress: false
-cache: 3600
+cache: 3153600
 cleanupStartup: false
 cleanupRuntime: false
+images: false
+js: false
+delay: 2000
 
 commands:
     slimerjs:

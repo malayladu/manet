@@ -23,6 +23,8 @@ function createSchema() {
         quality: joi.number().min(0).max(1),
         width: joi.number().integer().min(1),
         height: joi.number().integer().min(1),
+        ow: joi.number().integer().min(1), // Object Width for resize
+        oh: joi.number().integer().min(1), // Object Height for resize // Added By: Malay Ladu
         paperFormat: joi.string().trim().valid(
             'letter', 'A2', 'A3', 'A4', 'A5'),
         paperOrientation: joi.string().lowercase().trim().valid(
