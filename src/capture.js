@@ -81,14 +81,15 @@ function imageResize(outputFile, opts, cb) {
     let ow = _.get(opts, 'ow', 600);
     let oh = _.get(opts, 'oh', 1012);
 
-    logger.info('Image Resizing...');
+    logger.info('Image Resizing...', outputFile);
     sharp(outputFile).resize(ow, oh).toBuffer(outputFile, (err, buffer) => {
 
         if (err) {
             logger.error('Error in image resizing..');
             cb();
         }
-        logger.debug('Image Resizing Done Successfully...');
+
+        logger.info('Image Resizing Done Successfully...');
         fs.writeFile(outputFile, buffer, function(e) {
 
             if (e) {
@@ -120,7 +121,6 @@ function runCapturingProcess(options, config, outputFile, base64, onFinish) {
             minimizeImage(outputFile, config.storage, () => onFinish(error));
         } else {
             //onFinish(error);
-            logger.info(outputFile, 'Resizing a file....');
             imageResize(outputFile, options, () => onFinish(error));
         }
     });
