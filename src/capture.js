@@ -7,6 +7,7 @@ const _ = require('lodash'),
     squirrel = require('squirrel'),
     crypto = require('crypto'),
     utils = require('./utils'),
+    sharp = require('sharp'),
 
     SCRIPT_FILE = 'scripts/screenshot.js',
     DEF_ENGINE = 'phantomjs',
@@ -80,21 +81,21 @@ function imageResize(outputFile, opts, cb) {
     let ow = _.get(opts, 'ow', 600);
     let oh = _.get(opts, 'oh', 1012);
 
-    console.debug('Image Resizing...');
+    logger.info('Image Resizing...');
     sharp(outputFile).resize(ow, oh).toBuffer(outputFile, (err, buffer) => {
 
         if (err) {
-            console.debug('Error in image resizing..');
+            logger.error('Error in image resizing..');
             cb();
         }
-        console.debug('Image Resizing Done Successfully...');
+        logger.debug('Image Resizing Done Successfully...');
         fs.writeFile(outputFile, buffer, function(e) {
 
             if (e) {
-                console.debug('Error writing resized image in file..');
+                logger.error('Error writing resized image in file..');
                 cb();
             }
-            console.debug('Writing Resized File Done Successfully...');
+            logger.info('Writing Resized File Done Successfully...');
             cb();
         });
 
