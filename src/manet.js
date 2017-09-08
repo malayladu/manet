@@ -87,7 +87,7 @@ function initFsWatchdog(conf) {
 
 function initFsStorage(conf) {
     cleanupFsStorage(conf);
-    initFsWatchdog(conf);
+    //initFsWatchdog(conf); // NOTE: We don't want to delete stored files. So, commented this code. // Added By Malay Ladu
 }
 
 
