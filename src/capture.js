@@ -77,8 +77,8 @@ function minimizeImage(src, dest, cb) {
 /* Resize Screenshot */
 function imageResize(outputFile, opts, cb) {
 
-    let oh = opts.oh || 600;
-    let ow = opts.ow || 1012;
+    let ow = _.get(opts, 'ow', 600);
+    let oh = _.get(opts, 'oh', 1012);
 
     console.debug('Image Resizing...');
     sharp(outputFile).resize(ow, oh).toBuffer(outputFile, (err, buffer) => {
