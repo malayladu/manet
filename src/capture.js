@@ -33,6 +33,7 @@ function outputFile(options, conf) {
     //single directory
     var sub = sha1.substring(0, 2);
     return conf.storage + path.sep + sub + path.sep + sha1 + '.' + format;
+
 }
 
 function cliCommand(config) {
@@ -78,28 +79,41 @@ function minimizeImage(src, dest, cb) {
 /* Resize Screenshot */
 function imageResize(outputFile, opts, cb) {
 
-    let ow = _.get(opts, 'ow', 600);
-    let oh = _.get(opts, 'oh', 1012);
+    fs.stat(outputFile, function(err, stat) {
+        if (err == null) {
 
-    logger.info('Image Resizing...', outputFile);
-    sharp(outputFile).resize(ow, oh).toBuffer(outputFile, (err, buffer) => {
+            let ow = _.get(opts, 'ow', 600);
+            let oh = _.get(opts, 'oh', 1012);
 
-        if (err) {
-            logger.error('Error in image resizing..');
-            cb();
+            logger.info('[Image-Resize] Image Resizing...', outputFile);
+            sharp(outputFile).resize(ow, oh).toBuffer(outputFile, (err, buffer) => {
+
+                if (err) {
+                    logger.error('[Image-Resize] Error in image resizing..');
+                    return cb();
+                }
+
+                logger.info('[Image-Resize] Image Resizing Done Successfully...');
+                fs.writeFile(outputFile, buffer, function(e) {
+
+                    if (e) {
+                        logger.error('[Image-Resize] Error writing resized image in file..');
+                        return cb();
+                    }
+                    logger.info('[Image-Resize] Writing Resized File Done Successfully...');
+                    cb();
+                });
+
+            });
+
+        } else if (err.code == 'ENOENT') {
+            // file does not exist
+            logger.error('[Image-Resize] File Does Not Exists');
+            return cb();
+        } else {
+            logger.error('[Image-Resize] Some Other Error');
+            return cb();
         }
-
-        logger.info('Image Resizing Done Successfully...');
-        fs.writeFile(outputFile, buffer, function(e) {
-
-            if (e) {
-                logger.error('Error writing resized image in file..');
-                cb();
-            }
-            logger.info('Writing Resized File Done Successfully...');
-            cb();
-        });
-
     });
 
 }
@@ -120,8 +134,8 @@ function runCapturingProcess(options, config, outputFile, base64, onFinish) {
         if (config.compress) {
             minimizeImage(outputFile, config.storage, () => onFinish(error));
         } else {
-            //onFinish(error);
             imageResize(outputFile, options, () => onFinish(error));
+            //onFinish(error);
         }
     });
 }
